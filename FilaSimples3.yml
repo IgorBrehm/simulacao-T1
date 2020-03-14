@@ -1,0 +1,21 @@
+!PARAMETERS
+rndnumbers: 
+- 0.5876
+- 0.1421
+- 0.8794
+- 0.2003
+- 0.0021
+- 0.5783
+- 0.3256
+
+arrivals: 
+   F1: 2.0
+
+queues: 
+   F1: 
+      servers: 2
+      capacity: 3
+      minArrival: 1.0
+      maxArrival: 2.0
+      minService: 3.0
+      maxService: 6.0
