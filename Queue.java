@@ -48,15 +48,15 @@ public class Queue{
         return this.maxService;
     }
 
-    public static int getCurrentPeopleOnQueue(){
+    public int getCurrentPeopleOnQueue(){
         return peopleOnQueue;
     }
 
-    public static void removeFromQueue(){
+    public void removeFromQueue(){
         peopleOnQueue -= 1;
     }
 
-    public static void addToQueue(){
+    public void addToQueue(){
         peopleOnQueue += 1;
     }
 }

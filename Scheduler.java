@@ -2,7 +2,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Scheduler{
-    public static PriorityQueue<Task> schedulerQueue = new PriorityQueue<Task>(new taskComparator());
+    public PriorityQueue<Task> schedulerQueue = new PriorityQueue<Task>(new taskComparator());
 }
 
 class taskComparator implements Comparator<Task>{ 
