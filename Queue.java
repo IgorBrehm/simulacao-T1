@@ -1,62 +1,21 @@
 public class Queue{
-    private final String name;
-    private final int servers;
-    private final int capacity;
-    private final long minArrival;
-    private final long maxArrival;
-    private final long minService;
-    private final long maxService;
-    private static int peopleOnQueue = 0;
+    public final String name;
+    public final int servers;
+    public final int capacity;
+    public final long minArrival;
+    public final long maxArrival;
+    public final long minService;
+    public final long maxService;
+    public int peopleOnQueue = 0;
 
-    public Queue
-    (String name, int servers, int capacity,int minArrival, 
-    int maxArrival, int minService, int maxService){
-        this.name = name;
-        this.servers = servers;
-        this.capacity = capacity;
-        this.minArrival = minArrival;
-        this.maxArrival = maxArrival;
-        this.minService = minService;
-        this.maxService = maxService;
+    public Queue(String n, int s, int c,int minA, int maxA, int minS, int maxS){
+        this.name = n;
+        this.servers = s;
+        this.capacity = c;
+        this.minArrival = minA;
+        this.maxArrival = maxA;
+        this.minService = minS;
+        this.maxService = maxS;
     }
 
-    public String getName(){
-        return this.name;
-    }
-
-    public int getServers(){
-        return this.servers;
-    }
-
-    public int getCapacity(){
-        return this.capacity;
-    }
-
-    public long getMinArrival(){
-        return this.minArrival;
-    }
-
-    public long getMaxArrival(){
-        return this.maxArrival;
-    }
-
-    public long getMinService(){
-        return this.minService;
-    }
-
-    public long getMaxService(){
-        return this.maxService;
-    }
-
-    public int getCurrentPeopleOnQueue(){
-        return peopleOnQueue;
-    }
-
-    public void removeFromQueue(){
-        peopleOnQueue -= 1;
-    }
-
-    public void addToQueue(){
-        peopleOnQueue += 1;
-    }
 }

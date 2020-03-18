@@ -3,5 +3,6 @@ public class Simulator{
 
         // ler arquivo de entrada e criar/popular objetos
 
+        Simulation simulation1 = new Simulation();
     }
 }

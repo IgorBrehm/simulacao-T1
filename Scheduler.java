@@ -2,16 +2,16 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Scheduler{
-    public PriorityQueue<Task> schedulerQueue = new PriorityQueue<Task>(new taskComparator());
+    public PriorityQueue<Event> schedulerQueue = new PriorityQueue<Event>(new eventComparator());
 }
 
-class taskComparator implements Comparator<Task>{ 
+class eventComparator implements Comparator<Event>{ 
               
-    public int compare(Task t1, Task t2) { 
-        if (t1.getScheduledTime() < t2.getScheduledTime()){
+    public int compare(Event t1, Event t2) { 
+        if (t1.scheduledTime < t2.scheduledTime){
             return 1; 
         }
-        else if (t1.getScheduledTime() >= t2.getScheduledTime()){ 
+        else if (t1.scheduledTime >= t2.scheduledTime){ 
             return -1; 
         }
         else{

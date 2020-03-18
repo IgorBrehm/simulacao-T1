@@ -1,42 +1,75 @@
 public class Simulation{
 
-    protected static long time;
-    private static Scheduler scheduler = new Scheduler();
-    private static Queue F1 = new Queue("F1", 1, 3, 2, 3, 4, 5);
+    private static Scheduler scheduler = new Scheduler(); // escalonador de eventos
+    private static Queue F1 = new Queue("F1", 1, 3, 2, 3, 2, 4); // fila 1
+    protected static double[] time = new double[F1.capacity+1]; // vetor do tempo
+    private static Generator generator = new Generator(4); // gerador de numeros aleatorios
+    protected static long lost = 0; // numero de perdas da fila
 
     public Simulation(){
 
-        time = 0;
-        Task firstArrival = new Task(2, "F1", "arrival");
+        for(int i = 0; i < time.length; i++){
+            time[i] = 0.0;
+        }
+
+        Event firstArrival = new Event(2, "F1", "arrival");
         scheduler.schedulerQueue.add(firstArrival);
 
-        for(int iterations = 0; iterations < 10; iterations++){
-            Task nextTask = scheduler.schedulerQueue.poll();
-            System.out.println("Next task: "+nextTask.getOperation()+" -> "+nextTask.getTargetQueue());
+        // iteracoes da simulacao
+        for(int iterations = 0; iterations < 100000; iterations++){
+            Event nextEvent = scheduler.schedulerQueue.poll();
+            System.out.println("Next task: "+nextEvent.operation+" -> "+nextEvent.targetQueue);
 
-            if(nextTask.getOperation().equals("arrival")){
+            if(nextEvent.operation.equals("arrival")){
                 // chegada
-                arrival(nextTask);
+                arrival(nextEvent);
             }
             else {
                 // saida
-                passage(nextTask);
+                exit(nextEvent);
             }
         }
+
+        // mostrando resultados finais
+        double total = 0;
+        System.out.println("\n Final results: ");
+        for(int i = 0; i < time.length; i++){
+            System.out.println(" "+i+": "+time[i]);
+            total += time[i];
+        }
+        System.out.println("\n Total Time: "+total);
+        System.out.println(" Total Losses: "+lost);
     }
 
-    private void arrival(Task task){
-        time += task.getScheduledTime();
+    // simula a chegada
+    private void arrival(Event event){
+        time[F1.peopleOnQueue] += event.scheduledTime;
         
-        if(F1.getCurrentPeopleOnQueue() < F1.getCapacity()){
-            F1.addToQueue();
-            if(F1.getCurrentPeopleOnQueue()<= 1){
-                scheduler.schedulerQueue.add(new Task(scheduledTime, "F1", "passage"));
+        if(F1.peopleOnQueue < F1.capacity){
+            F1.peopleOnQueue += 1;
+            if(F1.peopleOnQueue <= 1){
+                scheduler.schedulerQueue.add(new Event(generateTime(F1.minService,F1.maxService), "F1", "exit"));
             }
+        }
+        else{
+            lost += 1;
+        }
+        scheduler.schedulerQueue.add(new Event(generateTime(F1.minArrival,F1.maxArrival), "F1", "arrival"));
+    }
+
+    // simula a saida
+    private void exit(Event event){
+        time[F1.peopleOnQueue] += event.scheduledTime;
+        F1.peopleOnQueue -= 1;
+
+        if(F1.peopleOnQueue >= 1){
+            scheduler.schedulerQueue.add(new Event(generateTime(F1.minService,F1.maxService), "F1", "exit"));
         }
     }
 
-    private void passage(Task task){
-
+    // gera um numero aleatorio e coloca dentro do tempo maximo e minimo especificado
+    private double generateTime(long minValue, long maxValue){
+        double answer = (minValue - maxValue) * generator.getNext() + maxValue;
+        return answer;
     }
 }
