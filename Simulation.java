@@ -30,12 +30,17 @@ public class Simulation{
             }
         }
 
-        // mostrando resultados finais
         double total = 0;
+        // calculando tempo total
+        for(int i = 0; i < time.length; i++){
+            total += time[i];
+        }
+
+        // calculando porcentagens e mostrando resultados finais
         System.out.println("\n Final results: ");
         for(int i = 0; i < time.length; i++){
-            System.out.println(" "+i+": "+time[i]);
-            total += time[i];
+            double percentage = (time[i] / total) * 100;
+            System.out.println(" "+i+": "+time[i]+ " = "+String.format("%.2f", percentage)+"%");
         }
         System.out.println("\n Total Time: "+total);
         System.out.println(" Total Losses: "+lost);
