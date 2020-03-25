@@ -1,9 +1,11 @@
 public class Simulation{
-
+    
+    protected static long numberOfRandoms = 100000; // qtdade nums aleatorios a serem gerados na simulacao
+    protected static long seed = 5; // semente a ser usada pelo gerador
     private static Scheduler scheduler = new Scheduler(); // escalonador de eventos
-    private static Queue F1 = new Queue("F1", 1, 3, 2, 3, 2, 4); // fila 1
+    private static Queue F1 = new Queue("F1", 1, 5, 2, 4, 3, 5); // fila 1 e seus parâmetros
     protected static double[] time = new double[F1.capacity+1]; // vetor do tempo
-    private static Generator generator = new Generator(4); // gerador de numeros aleatorios
+    private static Generator generator = new Generator(seed); // gerador de numeros aleatorios
     protected static long lost = 0; // numero de perdas da fila
 
     public Simulation(){
@@ -12,11 +14,11 @@ public class Simulation{
             time[i] = 0.0;
         }
 
-        Event firstArrival = new Event(2, "F1", "arrival");
+        Event firstArrival = new Event(3, "F1", "arrival");
         scheduler.schedulerQueue.add(firstArrival);
 
         // iteracoes da simulacao
-        for(int iterations = 0; iterations < 100000; iterations++){
+        while(numberOfRandoms > 0){
             Event nextEvent = scheduler.schedulerQueue.poll();
             System.out.println("Next task: "+nextEvent.operation+" -> "+nextEvent.targetQueue);
 
@@ -52,7 +54,7 @@ public class Simulation{
         
         if(F1.peopleOnQueue < F1.capacity){
             F1.peopleOnQueue += 1;
-            if(F1.peopleOnQueue <= 1){
+            if(F1.peopleOnQueue <= F1.servers){
                 scheduler.schedulerQueue.add(new Event(generateTime(F1.minService,F1.maxService), "F1", "exit"));
             }
         }
@@ -67,7 +69,7 @@ public class Simulation{
         time[F1.peopleOnQueue] += event.scheduledTime;
         F1.peopleOnQueue -= 1;
 
-        if(F1.peopleOnQueue >= 1){
+        if(F1.peopleOnQueue >= F1.servers){
             scheduler.schedulerQueue.add(new Event(generateTime(F1.minService,F1.maxService), "F1", "exit"));
         }
     }
@@ -75,6 +77,7 @@ public class Simulation{
     // gera um numero aleatorio e coloca dentro do tempo maximo e minimo especificado
     private double generateTime(long minValue, long maxValue){
         double answer = (minValue - maxValue) * generator.getNext() + maxValue;
+        numberOfRandoms -= 1;
         return answer;
     }
 }

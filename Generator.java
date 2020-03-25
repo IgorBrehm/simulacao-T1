@@ -1,5 +1,6 @@
 import java.util.Random;
 
+// Gerador de numeros aleatorios, recebe uma semente como parametro inicial
 public class Generator {
     private final Random random;
  
