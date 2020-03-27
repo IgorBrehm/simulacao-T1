@@ -9,14 +9,6 @@ public class Scheduler{
 class eventComparator implements Comparator<Event>{ 
               
     public int compare(Event t1, Event t2) { 
-        if (t1.scheduledTime < t2.scheduledTime){
-            return 1; 
-        }
-        else if (t1.scheduledTime >= t2.scheduledTime){ 
-            return -1; 
-        }
-        else{
-            return 0;
-        }
+        return Double.compare(t1.scheduledTime, t2.scheduledTime);
     }
 }

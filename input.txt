@@ -1,0 +1,8 @@
+firstArrival:F1:3.0
+F1
+servers:2
+capacity:3
+minArrival:2.0
+maxArrival:4.0
+minService:3.0
+maxService:5.0
