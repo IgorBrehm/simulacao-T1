@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 // Objeto que representa uma fila
 public class Queue{
     public final String name; // nome da fila
@@ -9,6 +11,7 @@ public class Queue{
     public final long maxService; // tempo maximo de atendimento
     public int peopleOnQueue = 0; // qtdade de pessoas atualmente na fila
     public double[] time; // vetor do tempo
+    public ArrayList<Connection> connections;
 
     public Queue(String n, int s, int c,int minA, int maxA, int minS, int maxS){
         this.name = n;
@@ -22,6 +25,6 @@ public class Queue{
         for(int i = 0; i < time.length; i++){
             time[i] = 0.0;
         }
+        this.connections = new ArrayList<Connection>();
     }
-
 }

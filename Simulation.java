@@ -5,18 +5,19 @@ import java.util.ArrayList;
 
 public class Simulation {
 
-    protected long numberOfRandoms = 100000; // qtdade nums aleatorios a serem gerados na simulacao
-    protected long seed = 5; // semente a ser usada pelo gerador
-    protected double treshold = 0.8; // chance de sair em vez de ocorrer passagem entre filas
+    protected long numberOfRandoms; // qtdade nums aleatorios a serem gerados na simulacao
+    protected long seed; // semente a ser usada pelo gerador
     private Scheduler scheduler = new Scheduler(); // escalonador de eventos
     protected ArrayList<Queue> queues = new ArrayList<Queue>(); // lista de filas
     protected double totalTime = 0; // tempo total
     private Generator generator = new Generator(seed); // gerador de numeros aleatorios
     protected long lost[]; // numero de perdas da fila
 
-    public Simulation() throws FileNotFoundException {
+    public Simulation(long n, long s, String path) throws FileNotFoundException {
 
-        readFromFile();
+        numberOfRandoms = n;
+        seed = s;
+        readFromFile(path);
 
         // iteracoes da simulacao
         while(numberOfRandoms > 0){
@@ -60,13 +61,7 @@ public class Simulation {
         if(queues.get(index).peopleOnQueue < queues.get(index).capacity){ // menos gente na fila que a capacidade
             queues.get(index).peopleOnQueue += 1; // adicionada pessoa a fila
             if(queues.get(index).peopleOnQueue <= queues.get(index).servers){ // menos ou igual quantia de gente na fila que a quantia de servidores
-                double chance = generator.getNext();
-                if(chance < treshold || queues.size() < 2){
-                    scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name, "exit"));
-                } // agendei saida
-                else{
-                    scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name+":"+queues.get(generateIndex(index)).name, "passage"));
-                } // agendei passagem pra uma fila aleatoria!
+                handleTresholds(index);
             }
         }
         else{
@@ -82,13 +77,7 @@ public class Simulation {
         queues.get(index).peopleOnQueue -= 1;
 
         if(queues.get(index).peopleOnQueue >= queues.get(index).servers){
-            double chance = generator.getNext();
-            if(chance < treshold || queues.size() < 2){
-                scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name, "exit"));
-            }
-            else{
-                scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name+":"+queues.get(generateIndex(index)).name, "passage"));
-            }                
+            handleTresholds(index);
         }
     }
 
@@ -99,24 +88,12 @@ public class Simulation {
         int targetIndex = findIndex(event.targetQueue.split(":")[1]);
         queues.get(originIndex).peopleOnQueue -= 1;
         if(queues.get(originIndex).peopleOnQueue >= queues.get(originIndex).servers){
-            double chance = generator.getNext();
-            if(chance < treshold){
-                scheduler.schedulerQueue.add(new Event(generateTime(queues.get(originIndex).minService,queues.get(originIndex).maxService), queues.get(originIndex).name, "exit"));
-            }
-            else{
-                scheduler.schedulerQueue.add(new Event(generateTime(queues.get(originIndex).minService,queues.get(originIndex).maxService), queues.get(originIndex).name+":"+queues.get(generateIndex(originIndex)).name, "passage"));
-            }                
+            handleTresholds(originIndex);        
         }
         if(queues.get(targetIndex).peopleOnQueue < queues.get(targetIndex).capacity){
             queues.get(targetIndex).peopleOnQueue += 1;
             if(queues.get(targetIndex).peopleOnQueue <= queues.get(targetIndex).servers){
-                double chance = generator.getNext();
-                if(chance < treshold){
-                    scheduler.schedulerQueue.add(new Event(generateTime(queues.get(targetIndex).minService,queues.get(targetIndex).maxService), queues.get(targetIndex).name, "exit"));
-                }
-                else{
-                    scheduler.schedulerQueue.add(new Event(generateTime(queues.get(targetIndex).minService,queues.get(targetIndex).maxService), queues.get(targetIndex).name+":"+queues.get(generateIndex(targetIndex)).name, "passage"));
-                }                
+                handleTresholds(targetIndex);       
             }
         }
         else{
@@ -124,20 +101,31 @@ public class Simulation {
         }
     }
 
+    // metodo que calcula a operacao a ser executada baseada nas configuracoes de treshold da fila em questao
+    private void handleTresholds(int index){
+        
+        double chance = generator.getNext();
+        numberOfRandoms -= 1;
+        double t = 0;
+
+        for(int i = 0; i < queues.get(index).connections.size(); i++){
+            Connection c = queues.get(index).connections.get(i);
+            t+= c.treshold;
+            if(chance < t){
+                if(c.target.equals("exit")){
+                    scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name, "exit"));
+                } // agendei saida
+                else{
+                    scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name+":"+queues.get(findIndex(c.target)).name, "passage"));
+                } // agendei passagem para outra fila
+            } 
+        }
+    }
+
     // gera um numero aleatorio e coloca dentro do tempo maximo e minimo especificado
     private double generateTime(long minValue, long maxValue){
         double answer = ((minValue - maxValue) * generator.getNext() + maxValue) + totalTime;
         numberOfRandoms -= 1;
-        return answer;
-    }
-
-    // gera um indice aleatorio pra escolha da fila alvo
-    // recebe o indice atual para evitar passagens entre a mesma fila
-    private int generateIndex(int index){
-        int answer = index;
-        while(answer == index){
-            answer = (int)Math.round((0 - (queues.size()-1)) * generator.getNext() + (queues.size()-1));
-        }
         return answer;
     }
 
@@ -160,9 +148,9 @@ public class Simulation {
     }
 
     // le o arquivo de entrada e popula os objetos
-    private void readFromFile() throws FileNotFoundException {
+    private void readFromFile(String path) throws FileNotFoundException {
 
-        File file = new File("input.txt");
+        File file = new File(path);
         Scanner in = new Scanner(file);
     
         // lendo a primeira chegada
@@ -173,7 +161,11 @@ public class Simulation {
         // lendo e criando as filas
         while(in.hasNextLine()){
             
-            String n = in.nextLine().split(":")[1];
+            String[] line = in.nextLine().split(":");
+            if(line.length == 0 || line.equals(null)){
+                break;
+            }
+            String n = line[1];
             int s = Integer.parseInt(in.nextLine().split(":")[1]);
             int c = Integer.parseInt(in.nextLine().split(":")[1]);
             int minA = Integer.parseInt(in.nextLine().split(":")[1]);
@@ -183,6 +175,13 @@ public class Simulation {
             queues.add(new Queue(n, s, c, minA, maxA, minS, maxS));
         }
         lost = new long[queues.size()];
+
+        // lendo e criando as conexoes entre filas
+        while(in.hasNextLine()){
+            String[] con = in.nextLine().split(":");
+            int i = findIndex(con[0]);
+            queues.get(i).connections.add(new Connection(con[1],Double.parseDouble(con[2])));
+        }
         in.close();
     }
 }
