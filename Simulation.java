@@ -162,7 +162,7 @@ public class Simulation {
         while(in.hasNextLine()){
             
             String[] line = in.nextLine().split(":");
-            if(line.length == 0 || line.equals(null)){
+            if(line.length <= 1 || line.equals(null)){
                 break;
             }
             String n = line[1];
