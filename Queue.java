@@ -9,9 +9,9 @@ public class Queue{
     public final long maxArrival; // tempo maximo de chegada
     public final long minService; // tempo minimo de atendimento
     public final long maxService; // tempo maximo de atendimento
-    public int peopleOnQueue = 0; // qtdade de pessoas atualmente na fila
+    public int peopleOnQueue; // qtdade de pessoas atualmente na fila
     public double[] time; // vetor do tempo
-    public ArrayList<Connection> connections;
+    public ArrayList<Connection> connections; // conexões existentes entre essa fila e saídas ou filas
 
     public Queue(String n, int s, int c,int minA, int maxA, int minS, int maxS){
         this.name = n;
@@ -26,5 +26,6 @@ public class Queue{
             time[i] = 0.0;
         }
         this.connections = new ArrayList<Connection>();
+        this.peopleOnQueue = 0;
     }
 }

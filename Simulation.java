@@ -77,7 +77,7 @@ public class Simulation {
         queues.get(index).peopleOnQueue -= 1;
 
         if(queues.get(index).peopleOnQueue >= queues.get(index).servers){
-            handleTresholds(index);
+            scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name, "exit"));
         }
     }
 
@@ -111,12 +111,15 @@ public class Simulation {
         for(int i = 0; i < queues.get(index).connections.size(); i++){
             Connection c = queues.get(index).connections.get(i);
             t+= c.treshold;
-            if(chance < t){
+            int result = Double.compare(chance, t);
+            if(result <= 0){
                 if(c.target.equals("exit")){
                     scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name, "exit"));
+                    return;
                 } // agendei saida
                 else{
                     scheduler.schedulerQueue.add(new Event(generateTime(queues.get(index).minService,queues.get(index).maxService), queues.get(index).name+":"+queues.get(findIndex(c.target)).name, "passage"));
+                    return;
                 } // agendei passagem para outra fila
             } 
         }
@@ -161,8 +164,9 @@ public class Simulation {
         // lendo e criando as filas
         while(in.hasNextLine()){
             
-            String[] line = in.nextLine().split(":");
-            if(line.length <= 1 || line.equals(null)){
+            String aux = in.nextLine();
+            String[] line = aux.split(":");
+            if(aux.length() == 0){
                 break;
             }
             String n = line[1];
@@ -178,7 +182,8 @@ public class Simulation {
 
         // lendo e criando as conexoes entre filas
         while(in.hasNextLine()){
-            String[] con = in.nextLine().split(":");
+            String nextLine = in.nextLine();
+            String[] con = nextLine.split(":");
             int i = findIndex(con[0]);
             queues.get(i).connections.add(new Connection(con[1],Double.parseDouble(con[2])));
         }

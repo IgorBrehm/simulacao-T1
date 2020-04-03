@@ -1,6 +1,6 @@
 firstArrival:F1:3.0
 queue:F1
-servers:2
+servers:1
 capacity:5
 minArrival:2
 maxArrival:4
