@@ -5,15 +5,15 @@ public class Queue{
     public final String name; // nome da fila
     public final int servers; // qtdade servidores
     public final int capacity; // capacidade maxima da fila
-    public final long minArrival; // tempo minimo de chegada
-    public final long maxArrival; // tempo maximo de chegada
-    public final long minService; // tempo minimo de atendimento
-    public final long maxService; // tempo maximo de atendimento
+    public final double minArrival; // tempo minimo de chegada
+    public final double maxArrival; // tempo maximo de chegada
+    public final double minService; // tempo minimo de atendimento
+    public final double maxService; // tempo maximo de atendimento
     public int peopleOnQueue; // qtdade de pessoas atualmente na fila
     public double[] time; // vetor do tempo
     public ArrayList<Connection> connections; // conexões existentes entre essa fila e saídas ou filas
 
-    public Queue(String n, int s, int c,int minA, int maxA, int minS, int maxS){
+    public Queue(String n, int s, int c,double minA, double maxA, double minS, double maxS){
         this.name = n;
         this.servers = s;
         this.capacity = c;

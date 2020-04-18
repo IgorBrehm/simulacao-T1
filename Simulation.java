@@ -58,7 +58,7 @@ public class Simulation {
         updateTimeVectors(event.scheduledTime); // atualiza tempo
         int index = findIndex(event.targetQueue); // encontra fila alvo
         
-        if(queues.get(index).peopleOnQueue < queues.get(index).capacity){ // menos gente na fila que a capacidade
+        if((queues.get(index).peopleOnQueue < queues.get(index).capacity) || queues.get(index).capacity == -1){ // menos gente na fila que a capacidade
             queues.get(index).peopleOnQueue += 1; // adicionada pessoa a fila
             if(queues.get(index).peopleOnQueue <= queues.get(index).servers){ // menos ou igual quantia de gente na fila que a quantia de servidores
                 handleTresholds(index);
@@ -90,7 +90,7 @@ public class Simulation {
         if(queues.get(originIndex).peopleOnQueue >= queues.get(originIndex).servers){
             handleTresholds(originIndex);        
         }
-        if(queues.get(targetIndex).peopleOnQueue < queues.get(targetIndex).capacity){
+        if((queues.get(targetIndex).peopleOnQueue < queues.get(targetIndex).capacity) || queues.get(targetIndex).capacity == -1){
             queues.get(targetIndex).peopleOnQueue += 1;
             if(queues.get(targetIndex).peopleOnQueue <= queues.get(targetIndex).servers){
                 handleTresholds(targetIndex);       
@@ -126,7 +126,7 @@ public class Simulation {
     }
 
     // gera um numero aleatorio e coloca dentro do tempo maximo e minimo especificado
-    private double generateTime(long minValue, long maxValue){
+    private double generateTime(double minValue, double maxValue){
         double answer = ((minValue - maxValue) * generator.getNext() + maxValue) + totalTime;
         numberOfRandoms -= 1;
         return answer;
@@ -172,10 +172,10 @@ public class Simulation {
             String n = line[1];
             int s = Integer.parseInt(in.nextLine().split(":")[1]);
             int c = Integer.parseInt(in.nextLine().split(":")[1]);
-            int minA = Integer.parseInt(in.nextLine().split(":")[1]);
-            int maxA = Integer.parseInt(in.nextLine().split(":")[1]);
-            int minS = Integer.parseInt(in.nextLine().split(":")[1]);
-            int maxS = Integer.parseInt(in.nextLine().split(":")[1]);
+            double minA = Double.parseDouble(in.nextLine().split(":")[1]);
+            double maxA = Double.parseDouble(in.nextLine().split(":")[1]);
+            double minS = Double.parseDouble(in.nextLine().split(":")[1]);
+            double maxS = Double.parseDouble(in.nextLine().split(":")[1]);
             queues.add(new Queue(n, s, c, minA, maxA, minS, maxS));
         }
         lost = new long[queues.size()];

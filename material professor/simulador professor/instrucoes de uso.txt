@@ -1,0 +1,11 @@
+Este simulador foi desenvolvido em Java pelo aluno Gabriel Couto durante o semestre de 2012/2
+na disciplina de Avaliação de Desempenho de Sistemas.
+
+Para utilizar o simulador, digite:
+java -jar simulator.jar run <modelfilename.yml>
+
+onde <modelfilename.yml> é o arquivo de entrada que descreve o sistema de filas o qual será 
+simulado.
+
+Para gerar um arquivo de exemplo a fim de utilizar o simulador, digite: 
+java -jar simulator.jar example
