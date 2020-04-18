@@ -41,7 +41,13 @@ public class Simulation {
         System.out.println("\n Final results: ");
         for(int j = 0; j < queues.size(); j++){
             System.out.println("\n Queue: "+queues.get(j).name);
+            if(queues.get(j).capacity == -1){
+                System.out.println(" Infinite capacity, showing first 10:");
+            }
             for(int i = 0; i < queues.get(j).time.length; i++){
+                if(i >= 10 && queues.get(j).time[i] == 0.0){
+                    continue;
+                }
                 double percentage = (queues.get(j).time[i] / totalTime) * 100;
                 System.out.println(" "+i+": "+queues.get(j).time[i]+ " = "+String.format("%.2f", percentage)+"%");
             }

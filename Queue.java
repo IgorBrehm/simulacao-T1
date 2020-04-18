@@ -21,7 +21,14 @@ public class Queue{
         this.maxArrival = maxA;
         this.minService = minS;
         this.maxService = maxS;
-        this.time = new double[capacity + 1];
+
+        if(this.capacity == -1){
+            this.time = new double[1000000];
+        }
+        else{
+            this.time = new double[capacity + 1];
+        }
+        
         for(int i = 0; i < time.length; i++){
             time[i] = 0.0;
         }

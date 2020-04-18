@@ -20,6 +20,7 @@ minArrival:2
 maxArrival:4
 minService:10
 maxService:20
+
 F1:F2:0.8
 F1:F3:0.2
 F2:F1:0.3
